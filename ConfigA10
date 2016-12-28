@@ -1,7 +1,7 @@
-EX#show run
+show run
 Building configuration...
-Current configuration : 26136 bytes
-!Configuration last updated at 15:30:19 ICT Sat Nov 26 2016
+Current configuration : 25850 bytes
+!Configuration last updated at 13:38:33 ICT Wed Dec 28 2016
 !Configuration last saved at 21:47:10 ICT Wed Sep 24 2014
 !version 3.2.0.132
 !
@@ -15,7 +15,6 @@ no qos autodetect vlan
 no qos autodetect interface               
 no qos autodetect internal-subnet         
 no qos autodetect IP-Protocol             
- 
 !
 !
 interface ethernet 1
@@ -32,7 +31,7 @@ interface ethernet 2
 !
 interface ethernet 3
  speedduplex auto
- ip address 20.20.20.1 255.255.255.0
+ shutdown
  permit ssh http ping 
 !
 interface ethernet 4
@@ -50,13 +49,11 @@ interface management
 ip route 0.0.0.0 0.0.0.0 103.49.148.1
 ip route 0.0.0.0 0.0.0.0 103.49.149.1
 ip route 10.0.0.0 255.0.0.0 192.168.11.1
-ip route 61.19.236.0 255.255.255.192 192.168.11.1
 ip route 103.49.148.0 255.255.255.0 192.168.11.1
 ip route 103.49.149.0 255.255.255.0 192.168.11.1
-ip route 122.154.30.0 255.255.255.192 192.168.11.1
 ip route 172.16.0.0 255.240.0.0 192.168.11.1
 ip route 192.168.0.0 255.255.0.0 192.168.11.1
-!       
+!
 health method http http
 health method google-dns icmp transparent 8.8.8.8
 health method google-http http
@@ -78,7 +75,7 @@ health monitor google-dns2
 health monitor dns-a10networks.com
    method a10networks.com
    min-active-cnt 0
-!       
+!
 qos category AutoCreated Others 
    description "unclassified applications"
 qos category SystemConfigured Misc 
@@ -93,7 +90,6 @@ qos category AutoCreated subnet
    description "internal subnet"
 qos category AutoCreated IP-Protocol 
    description IP-Protocol
-        
 qos category SystemConfigured Application 
    description Application
 qos category SystemConfigured Database 
@@ -198,7 +194,6 @@ qos class netbios-dgm category File SystemConfigured
    match dport 138 SystemConfigured 
 qos class netbios-ssn category File SystemConfigured
    match dport 139 SystemConfigured 
-        
 qos class Netware-NCP category File SystemConfigured
    match dport 524 SystemConfigured 
 qos class Netware-cmd category File SystemConfigured
@@ -214,7 +209,6 @@ qos class nfs category File SystemConfigured
    match application nfs SystemConfigured 
 qos class gopher category Misc SystemConfigured
    match dport 70 SystemConfigured 
-        
 qos class uucp category Misc SystemConfigured
    match dport 117 SystemConfigured 
    match dport 540 SystemConfigured 
@@ -230,7 +224,6 @@ qos class ariel3 category Misc SystemConfigured
    match dport 422 SystemConfigured 
 qos class shell category Misc SystemConfigured
    match prot tcp dport 514 SystemConfigured 
-        
 qos class syslog category Misc SystemConfigured
    match prot udp dport 514 SystemConfigured 
 qos class printer category Misc SystemConfigured
@@ -275,7 +268,6 @@ qos class exchange category Misc SystemConfigured
    match application exchange SystemConfigured 
 qos class vnc category Misc SystemConfigured
    match application vnc SystemConfigured 
-        
 qos class aim category Messaging SystemConfigured
    match application aim SystemConfigured 
 qos class ircs category Messaging SystemConfigured
@@ -321,7 +313,6 @@ qos class cspace category P2P SystemConfigured
    match application cspace SystemConfigured 
 qos class krawler category P2P SystemConfigured
    match application krawler SystemConfigured 
-        
 qos class xunlei category P2P SystemConfigured
    match application xunlei SystemConfigured 
 qos class share category P2P SystemConfigured
@@ -366,7 +357,6 @@ qos class 100bao category P2P SystemConfigured
    match application 100bao SystemConfigured 
 qos class huntmine category P2P SystemConfigured
    match application huntmine SystemConfigured 
-        
 qos class sopcast category P2P SystemConfigured
    match application sopcast SystemConfigured 
 qos class napster category P2P SystemConfigured
@@ -411,7 +401,6 @@ qos class remote-desktop category Session SystemConfigured
    match application remote-desktop SystemConfigured 
 qos class rtp category VOIP SystemConfigured
    match application rtp SystemConfigured 
-        
 qos class h323ras category VOIP SystemConfigured
    match application h323ras SystemConfigured 
 qos class h323q931 category VOIP SystemConfigured
@@ -487,10 +476,6 @@ qos class dmz-server1 category Misc
 qos class dmz-server2 category Misc
    match sip 103.49.149.0/24 
 qos class lb-gateway-host category Misc
-   match sip 122.154.30.31/32 
-   match sip 122.154.30.32/32 
-   match sip 122.154.30.33/32 
-   match sip 122.154.30.34/32 
    match sip 103.49.148.11/32 
    match sip 103.49.148.12/32 
    match sip 103.49.148.13/32 
@@ -507,13 +492,12 @@ qos class dmz category Misc
    match dip 103.49.149.0/24 
 qos class apt-dmz category Misc
    match sip 192.168.10.23/32 
-qos class apt-test category Misc
-   match sip 10.76.50.100/32 
-        
 qos class apt-net-20 category Misc
    match sip 20.20.20.0/24 
-qos class apt137 category Misc
-   match sip 10.70.100.137/32 
+qos class apt-net-30 category Misc
+   match sip 30.30.30.0/24 
+qos class Test-LB category Misc
+   match sip 10.76.56.139/32 
 qos view subnet AutoCreated
    include  subnet
 qos view extif AutoCreated
@@ -612,7 +596,7 @@ llb link cat-pj 103.49.149.1 255.255.255.0
    no nat qos class dmz-server2
    bandwidth 200000
    price bandwidth unlimited 1000
-   weight 2
+   weight 10
    bind port ethernet 1
    bind health monitor google-dns
 !
@@ -627,15 +611,14 @@ llb link cat-rb 103.49.148.1 255.255.255.0
 llb group cat-pj
    method round-robin
    bind link cat-pj
-   bind qos class apt-test priority 10
-   bind qos class apt137 priority 10
    bind qos class dmz-server2 priority 10
 !
 llb group cat-rb
    method round-robin
    bind link cat-rb
-   bind qos class apt-dmz priority 10
+   bind qos class Test-LB priority 10
    bind qos class apt-net-20 priority 10
+   bind qos class apt-net-30 priority 10
    bind qos class dmz-server1 priority 10
 !
 llb group lb-all-link
@@ -738,7 +721,7 @@ applog archive format html
 !
 locale en_US.UTF-8
 enable-password encrypted P4iB1ENyWQGYDIEnG82H5vOkB7eX1iZIr8OYpA==
-!       
+!
 banner login "Welcome to EX"
 !
 terminal idle-timeout 10
@@ -747,3 +730,4 @@ terminal width 80
 terminal length 24
 terminal editing
 terminal history
+EX#
