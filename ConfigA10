@@ -1,0 +1,749 @@
+EX#show run
+Building configuration...
+Current configuration : 26136 bytes
+!Configuration last updated at 15:30:19 ICT Sat Nov 26 2016
+!Configuration last saved at 21:47:10 ICT Wed Sep 24 2014
+!version 3.2.0.132
+!
+hostname EX
+!
+clock timezone Asia/Bangkok
+!
+no ntp enable
+!
+no qos autodetect vlan                    
+no qos autodetect interface               
+no qos autodetect internal-subnet         
+no qos autodetect IP-Protocol             
+ 
+!
+!
+interface ethernet 1
+ speedduplex auto
+ external
+ ip address 103.49.149.2 255.255.255.252
+ permit  ping 
+!
+interface ethernet 2
+ speedduplex auto
+ external
+ ip address 103.49.148.2 255.255.255.252
+ permit  ping 
+!
+interface ethernet 3
+ speedduplex auto
+ ip address 20.20.20.1 255.255.255.0
+ permit ssh http ping 
+!
+interface ethernet 4
+ speedduplex 1000full
+ ip address 192.168.11.6 255.255.255.248
+ permit ssh http ping 
+!
+interface management
+ speedduplex auto
+ ip address 172.31.31.33 255.255.255.0
+ permit ssh http ping 
+!
+! trunk configuration
+!
+ip route 0.0.0.0 0.0.0.0 103.49.148.1
+ip route 0.0.0.0 0.0.0.0 103.49.149.1
+ip route 10.0.0.0 255.0.0.0 192.168.11.1
+ip route 61.19.236.0 255.255.255.192 192.168.11.1
+ip route 103.49.148.0 255.255.255.0 192.168.11.1
+ip route 103.49.149.0 255.255.255.0 192.168.11.1
+ip route 122.154.30.0 255.255.255.192 192.168.11.1
+ip route 172.16.0.0 255.240.0.0 192.168.11.1
+ip route 192.168.0.0 255.255.0.0 192.168.11.1
+!       
+health method http http
+health method google-dns icmp transparent 8.8.8.8
+health method google-http http
+health method google-dns2 icmp transparent 4.4.4.4
+health method a10networks.com dns domain www.a10networks.com
+!
+health monitor http
+   method http
+   min-active-cnt 0
+health monitor google-dns
+   method google-dns
+   min-active-cnt 0
+health monitor google-http
+   method google-http
+   min-active-cnt 0
+health monitor google-dns2
+   method google-dns2
+   min-active-cnt 0
+health monitor dns-a10networks.com
+   method a10networks.com
+   min-active-cnt 0
+!       
+qos category AutoCreated Others 
+   description "unclassified applications"
+qos category SystemConfigured Misc 
+   description Misc
+qos category AutoCreated Vlan 
+   description vlan
+qos category AutoCreated intif 
+   description "internal interface"
+qos category AutoCreated extif 
+   description "external interface"
+qos category AutoCreated subnet 
+   description "internal subnet"
+qos category AutoCreated IP-Protocol 
+   description IP-Protocol
+        
+qos category SystemConfigured Application 
+   description Application
+qos category SystemConfigured Database 
+   description Database
+qos category SystemConfigured DirectoryService 
+   description DirectoryService
+qos category SystemConfigured Email 
+   description Email
+qos category SystemConfigured File 
+   description File
+qos category SystemConfigured Messaging 
+   description "Instant messaging"
+qos category SystemConfigured Multimedia 
+   description Multimedia
+qos category SystemConfigured P2P 
+   description P2P
+qos category SystemConfigured Session 
+   description Session
+qos category SystemConfigured Security 
+   description Security
+qos category SystemConfigured VOIP 
+   description VOIP
+qos category SystemConfigured Games 
+   description "Online Gaming"
+qos portlist msn_game-udp 
+ port 28800 to 29000
+qos portlist quake-tcp 
+ port 27660 to 27662
+qos portlist quake-udp 
+ port 27660 to 27662
+qos portlist ultima-tcp 
+ port 5001 to 5010
+qos portlist unreal_tournament-udp 
+ port 7777 to 7779
+qos class others category Others SystemConfigured
+qos class sys_if1 category extif AutoCreated
+   match interface ethernet 1 AutoCreated 
+qos class sys_if2 category extif AutoCreated
+   match interface ethernet 2 AutoCreated 
+qos class sys_if3 category intif AutoCreated
+   match interface ethernet 3 AutoCreated 
+qos class sys_if4 category intif AutoCreated
+   match interface ethernet 4 AutoCreated 
+qos class sys_if5 category intif AutoCreated
+   match interface management AutoCreated 
+qos class mssql category Database SystemConfigured
+   match application mssql SystemConfigured 
+qos class mysql category Database SystemConfigured
+   match application mysql SystemConfigured 
+qos class oracle category Database SystemConfigured
+   match application oracle SystemConfigured 
+qos class rrp category DirectoryService SystemConfigured
+   match dport 648 SystemConfigured 
+qos class bootps category DirectoryService SystemConfigured
+   match dport 67 SystemConfigured 
+qos class bootpc category DirectoryService SystemConfigured
+   match dport 68 SystemConfigured 
+qos class finger category DirectoryService SystemConfigured
+   match dport 79 SystemConfigured 
+qos class whois category DirectoryService SystemConfigured
+   match dport 63 SystemConfigured 
+qos class tacacs category DirectoryService SystemConfigured
+   match dport 49 SystemConfigured 
+qos class ident category DirectoryService SystemConfigured
+   match dport 113 SystemConfigured 
+qos class crs category DirectoryService SystemConfigured
+   match dport 507 SystemConfigured 
+qos class dns category DirectoryService SystemConfigured
+   match application dns SystemConfigured 
+qos class kerberos category DirectoryService SystemConfigured
+   match dport 88 SystemConfigured 
+   match dport 749 SystemConfigured 
+   match dport 750 SystemConfigured 
+   match dport 751 SystemConfigured 
+   match dport 752 SystemConfigured 
+   match dport 760 SystemConfigured 
+qos class ldaps category DirectoryService SystemConfigured
+   match dport 636 SystemConfigured 
+qos class ldap category DirectoryService SystemConfigured
+   match application ldap SystemConfigured 
+qos class radius category DirectoryService SystemConfigured
+   match application radius SystemConfigured 
+qos class biff category Email SystemConfigured
+   match prot udp dport 512 SystemConfigured 
+qos class imaps category Email SystemConfigured
+   match dport 993 SystemConfigured 
+qos class imap category Email SystemConfigured
+   match application imap SystemConfigured 
+qos class pop3s category Email SystemConfigured
+   match dport 995 SystemConfigured 
+qos class pop3 category Email SystemConfigured
+   match application pop3 SystemConfigured 
+qos class smtps category Email SystemConfigured
+   match dport 465 SystemConfigured 
+qos class smtp category Email SystemConfigured
+   match application smtp SystemConfigured 
+qos class tftp category File SystemConfigured
+   match application tftp SystemConfigured 
+qos class netbios-ns category File SystemConfigured
+   match dport 137 SystemConfigured 
+qos class netbios-dgm category File SystemConfigured
+   match dport 138 SystemConfigured 
+qos class netbios-ssn category File SystemConfigured
+   match dport 139 SystemConfigured 
+        
+qos class Netware-NCP category File SystemConfigured
+   match dport 524 SystemConfigured 
+qos class Netware-cmd category File SystemConfigured
+   match dport 2302 SystemConfigured 
+   match dport 2645 SystemConfigured 
+qos class fujitsu-dev category File SystemConfigured
+   match dport 744 SystemConfigured 
+qos class rsync category File SystemConfigured
+   match dport 873 SystemConfigured 
+qos class cifs category File SystemConfigured
+   match application cifs SystemConfigured 
+qos class nfs category File SystemConfigured
+   match application nfs SystemConfigured 
+qos class gopher category Misc SystemConfigured
+   match dport 70 SystemConfigured 
+        
+qos class uucp category Misc SystemConfigured
+   match dport 117 SystemConfigured 
+   match dport 540 SystemConfigured 
+qos class ntp category Misc SystemConfigured
+   match application ntp SystemConfigured 
+qos class rpc2portmap category Misc SystemConfigured
+   match dport 369 SystemConfigured 
+qos class sunrpc category Misc SystemConfigured
+   match dport 111 SystemConfigured 
+qos class ariel2 category Misc SystemConfigured
+   match dport 419 SystemConfigured 
+qos class ariel3 category Misc SystemConfigured
+   match dport 422 SystemConfigured 
+qos class shell category Misc SystemConfigured
+   match prot tcp dport 514 SystemConfigured 
+        
+qos class syslog category Misc SystemConfigured
+   match prot udp dport 514 SystemConfigured 
+qos class printer category Misc SystemConfigured
+   match dport 515 SystemConfigured 
+qos class ipp category Misc SystemConfigured
+   match dport 631 SystemConfigured 
+qos class AURP category Misc SystemConfigured
+   match dport 387 SystemConfigured 
+qos class snmp category Misc SystemConfigured
+   match dport 161 SystemConfigured 
+qos class snmptrap category Misc SystemConfigured
+   match dport 162 SystemConfigured 
+qos class router category Misc SystemConfigured
+   match prot udp dport 520 SystemConfigured 
+qos class bgp category Misc SystemConfigured
+   match dport 179 SystemConfigured 
+qos class nntp category Misc SystemConfigured
+   match dport 119 SystemConfigured 
+qos class nntps category Misc SystemConfigured
+   match dport 563 SystemConfigured 
+qos class echo category Misc SystemConfigured
+   match dport 7 SystemConfigured 
+qos class daytime category Misc SystemConfigured
+   match dport 13 SystemConfigured 
+qos class time category Misc SystemConfigured
+   match dport 37 SystemConfigured 
+qos class dhcp-client category Misc SystemConfigured
+   match dport 546 SystemConfigured 
+qos class dhcp-server category Misc SystemConfigured
+   match dport 547 SystemConfigured 
+qos class sftp category Misc SystemConfigured
+   match dport 115 SystemConfigured 
+qos class ftp category Misc SystemConfigured
+   match application ftp SystemConfigured 
+qos class http category Misc SystemConfigured
+   match application http SystemConfigured 
+qos class lotus category Misc SystemConfigured
+   match application lotus SystemConfigured 
+qos class mthread category Misc SystemConfigured
+   match application http.range ~ "*" SystemConfigured 
+qos class exchange category Misc SystemConfigured
+   match application exchange SystemConfigured 
+qos class vnc category Misc SystemConfigured
+   match application vnc SystemConfigured 
+        
+qos class aim category Messaging SystemConfigured
+   match application aim SystemConfigured 
+qos class ircs category Messaging SystemConfigured
+   match dport 994 SystemConfigured 
+qos class irc category Messaging SystemConfigured
+   match dport 194 SystemConfigured 
+qos class yim category Messaging SystemConfigured
+   match application yim SystemConfigured 
+qos class msnim category Messaging SystemConfigured
+   match application msnim SystemConfigured 
+qos class gtalk category Messaging SystemConfigured
+   match application gtalk SystemConfigured 
+qos class qq category Messaging SystemConfigured
+   match application qq SystemConfigured 
+qos class fetion category Messaging SystemConfigured
+   match application fetion SystemConfigured 
+qos class abacast category Multimedia SystemConfigured
+   match application abacast SystemConfigured 
+qos class quicktime category Multimedia SystemConfigured
+   match application quicktime SystemConfigured 
+qos class itunes category Multimedia SystemConfigured
+   match application itunes SystemConfigured 
+qos class flv category Multimedia SystemConfigured
+   match application http.content-type ~ "flash" SystemConfigured 
+   match application http.content-type ~ "flv" SystemConfigured 
+   match application http.content-type ~ "fcs" SystemConfigured 
+   match dport 1935 SystemConfigured 
+qos class rtsp category Multimedia SystemConfigured
+   match application rtsp SystemConfigured 
+qos class msmms category Multimedia SystemConfigured
+   match application msmms SystemConfigured 
+qos class youtube category Multimedia SystemConfigured
+   match application youtube SystemConfigured 
+qos class kkbox category Multimedia SystemConfigured
+   match application kkbox SystemConfigured 
+qos class bittorrent category P2P SystemConfigured
+   match application bittorrent SystemConfigured 
+qos class emule category P2P SystemConfigured
+   match application emule SystemConfigured 
+qos class ares category P2P SystemConfigured
+   match application ares SystemConfigured 
+qos class cspace category P2P SystemConfigured
+   match application cspace SystemConfigured 
+qos class krawler category P2P SystemConfigured
+   match application krawler SystemConfigured 
+        
+qos class xunlei category P2P SystemConfigured
+   match application xunlei SystemConfigured 
+qos class share category P2P SystemConfigured
+   match application share SystemConfigured 
+qos class gnutella category P2P SystemConfigured
+   match application gnutella SystemConfigured 
+qos class kazaa category P2P SystemConfigured
+   match application kazaa SystemConfigured 
+qos class directconnect category P2P SystemConfigured
+   match application directconnect SystemConfigured 
+qos class soulseek category P2P SystemConfigured
+   match application soulseek SystemConfigured 
+qos class winmx category P2P SystemConfigured
+   match application winmx SystemConfigured 
+qos class winny category P2P SystemConfigured
+   match application winny SystemConfigured 
+qos class dijjer category P2P SystemConfigured
+   match application http.user-agent ~ "Dijjer" SystemConfigured 
+qos class freecast category P2P SystemConfigured
+   match application freecast SystemConfigured 
+qos class pplive category P2P SystemConfigured
+   match application pplive SystemConfigured 
+qos class qqlive category P2P SystemConfigured
+   match application qqlive SystemConfigured 
+qos class imesh category P2P SystemConfigured
+   match application imesh SystemConfigured 
+qos class limewire category P2P SystemConfigured
+   match application limewire SystemConfigured 
+qos class furthurnet category P2P SystemConfigured
+   match application furthurnet SystemConfigured 
+qos class ppstream category P2P SystemConfigured
+   match application ppstream SystemConfigured 
+qos class tvants category P2P SystemConfigured
+   match application tvants SystemConfigured 
+qos class kugoo category P2P SystemConfigured
+   match application kugoo SystemConfigured 
+qos class poco category P2P SystemConfigured
+   match application poco SystemConfigured 
+qos class baidux category P2P SystemConfigured
+   match application baidux SystemConfigured 
+qos class 100bao category P2P SystemConfigured
+   match application 100bao SystemConfigured 
+qos class huntmine category P2P SystemConfigured
+   match application huntmine SystemConfigured 
+        
+qos class sopcast category P2P SystemConfigured
+   match application sopcast SystemConfigured 
+qos class napster category P2P SystemConfigured
+   match application napster SystemConfigured 
+qos class uusee category P2P SystemConfigured
+   match application uusee SystemConfigured 
+qos class sharetastic category P2P SystemConfigured
+   match application sharetastic SystemConfigured 
+qos class shareaza category P2P SystemConfigured
+   match application shareaza SystemConfigured 
+qos class foxy category P2P SystemConfigured
+   match application foxy SystemConfigured 
+qos class vagaa category P2P SystemConfigured
+   match application vagaa SystemConfigured 
+qos class gogobox category P2P SystemConfigured
+   match application gogobox SystemConfigured 
+qos class clubbox category P2P SystemConfigured
+   match application clubbox SystemConfigured 
+qos class matip-type-a category Session SystemConfigured
+   match dport 350 SystemConfigured 
+qos class matip-type-b category Session SystemConfigured
+   match dport 351 SystemConfigured 
+qos class cvspserver category Session SystemConfigured
+   match dport 2401 SystemConfigured 
+qos class rexec category Session SystemConfigured
+   match prot tcp dport 512 SystemConfigured 
+qos class who category Session SystemConfigured
+   match prot udp dport 513 SystemConfigured 
+qos class login category Session SystemConfigured
+   match prot tcp dport 513 SystemConfigured 
+qos class rtelnet category Session SystemConfigured
+   match dport 107 SystemConfigured 
+qos class telnets category Session SystemConfigured
+   match dport 992 SystemConfigured 
+qos class telnet category Session SystemConfigured
+   match application telnet SystemConfigured 
+qos class ssh category Session SystemConfigured
+   match application ssh SystemConfigured 
+qos class stun category Session SystemConfigured
+   match application stun SystemConfigured 
+qos class remote-desktop category Session SystemConfigured
+   match application remote-desktop SystemConfigured 
+qos class rtp category VOIP SystemConfigured
+   match application rtp SystemConfigured 
+        
+qos class h323ras category VOIP SystemConfigured
+   match application h323ras SystemConfigured 
+qos class h323q931 category VOIP SystemConfigured
+   match application h323q931 SystemConfigured 
+qos class megaco category VOIP SystemConfigured
+   match application megaco SystemConfigured 
+qos class mgcp category VOIP SystemConfigured
+   match application mgcp SystemConfigured 
+qos class rtcp category VOIP SystemConfigured
+   match application rtcp SystemConfigured 
+qos class sip category VOIP SystemConfigured
+   match application sip SystemConfigured 
+qos class skinny category VOIP SystemConfigured
+   match application skinny SystemConfigured 
+qos class skype category VOIP SystemConfigured
+   match application skype SystemConfigured 
+qos class t120 category VOIP SystemConfigured
+   match application t120 SystemConfigured 
+qos class isakmp category Security SystemConfigured
+   match application isakmp SystemConfigured 
+qos class socks category Security SystemConfigured
+   match dport 1080 SystemConfigured 
+qos class ssl category Security SystemConfigured
+   match application ssl SystemConfigured 
+qos class myth category Games SystemConfigured
+   disable
+   match prot tcp dport 3453 SystemConfigured 
+qos class need_4_speed category Games SystemConfigured
+   disable
+   match prot udp dport 9442 SystemConfigured 
+   match prot tcp dport 1030 SystemConfigured 
+qos class msn_game category Games SystemConfigured
+   disable
+   match prot udp dport portlist msn_game-udp SystemConfigured 
+qos class operation_flashpoint category Games SystemConfigured
+   disable
+   match prot tcp dport 47624 SystemConfigured 
+   match prot udp dport 6073 SystemConfigured 
+qos class outlaws category Games SystemConfigured
+   disable
+   match prot tcp dport 5310 SystemConfigured 
+   match prot udp dport 5310 SystemConfigured 
+qos class quake category Games SystemConfigured
+   disable
+   match prot tcp dport portlist quake-tcp SystemConfigured 
+   match prot udp dport portlist quake-udp SystemConfigured 
+qos class swat3 category Games SystemConfigured
+   disable
+   match prot tcp dport 16639 SystemConfigured 
+   match prot udp dport 16639 SystemConfigured 
+qos class ultima category Games SystemConfigured
+   disable
+   match prot tcp dport portlist ultima-tcp SystemConfigured 
+qos class unreal_tournament category Games SystemConfigured
+   disable
+   match prot udp dport portlist unreal_tournament-udp SystemConfigured 
+qos class znes category Games SystemConfigured
+   disable
+   match prot udp dport 7845 SystemConfigured 
+qos class doom category Games SystemConfigured
+   disable
+   match prot tcp dport 666 SystemConfigured 
+qos class secondlife category Games SystemConfigured
+   disable
+   match prot udp dport 12035 SystemConfigured 
+qos class xbox category Games SystemConfigured
+   disable
+   match prot udp dport 3074 SystemConfigured 
+qos class icmp category IP-Protocol AutoCreated
+   match prot icmp AutoCreated 
+qos class dmz-server1 category Misc
+   match sip 103.49.148.0/24 
+qos class dmz-server2 category Misc
+   match sip 103.49.149.0/24 
+qos class lb-gateway-host category Misc
+   match sip 122.154.30.31/32 
+   match sip 122.154.30.32/32 
+   match sip 122.154.30.33/32 
+   match sip 122.154.30.34/32 
+   match sip 103.49.148.11/32 
+   match sip 103.49.148.12/32 
+   match sip 103.49.148.13/32 
+qos class gre category IP-Protocol AutoCreated
+   match prot 47 AutoCreated 
+qos class mea-proxy category Misc
+   match sip 10.70.217.11/32 
+   match sip 10.70.217.12/32 
+   match sip 10.70.217.13/32 
+qos class proxy1 category Misc
+   match sip 122.154.30.34/32 
+qos class dmz category Misc
+   match dip 103.49.148.0/24 
+   match dip 103.49.149.0/24 
+qos class apt-dmz category Misc
+   match sip 192.168.10.23/32 
+qos class apt-test category Misc
+   match sip 10.76.50.100/32 
+        
+qos class apt-net-20 category Misc
+   match sip 20.20.20.0/24 
+qos class apt137 category Misc
+   match sip 10.70.100.137/32 
+qos view subnet AutoCreated
+   include  subnet
+qos view extif AutoCreated
+   include  extif
+qos view intif AutoCreated
+   include  intif
+qos view vlan AutoCreated
+   include  Vlan
+qos view application AutoCreated
+   include  Others
+   include  IP-Protocol
+   include  Misc
+   include  Session
+   include  Security
+   include  VOIP
+   include  Multimedia
+   include  Database
+   include  Application
+   include  DirectoryService
+   include  Email
+   include  File
+   include  Messaging
+   include  P2P
+qos statistic memory 16
+qos resource-limit class auto-created number 1024
+!
+report history 30
+report favorite others "others top service"
+  period hours 3 before now
+  content others-class ip-port range destination
+  format html
+report favorite url "url top"
+  period hours 3 before now
+  content url top-url
+  format html
+report favorite tcp "tcp rtt"
+  period hours 3 before now
+  content tcp rtt
+  format html
+report favorite tcp "tcp conn health"
+  period hours 3 before now
+  content tcp conn-health
+  format html
+report favorite tcp "tcp efficiency"
+  period hours 3 before now
+  content tcp efficiency
+  format html
+report favorite traffic "packet dist top internal talker"
+  period hours 3 before now
+  content packet-distribution top-internal-talker
+  format html
+report favorite traffic "packet dist top class"
+  period hours 3 before now
+  content packet-distribution top-class
+  format html
+report favorite traffic "packet dist overall"
+  period hours 3 before now
+  content packet-distribution overall
+  format html
+report favorite traffic "conn top external talker"
+  period hours 3 before now
+  content conn top-external-talker
+  format html
+report favorite traffic "conn top internal talker"
+  period hours 3 before now
+  content conn top-internal-talker
+  format html
+report favorite traffic "conn top class"
+  period hours 3 before now
+  content conn top-class
+  format html
+report favorite traffic "conn overall"
+  period hours 3 before now
+  content conn overall
+  format html
+report favorite traffic "rate top external talker"
+  period hours 3 before now
+  content rate top-external-talker
+  format html
+report favorite traffic "rate top internal talker"
+  period hours 3 before now
+  content rate top-internal-talker
+  format html
+report favorite traffic "rate top class"
+  period hours 3 before now
+  content rate top-class
+  format html
+report favorite traffic "rate overall"
+  period hours 3 before now
+  content rate overall
+  format html
+!
+llb link cat-pj 103.49.149.1 255.255.255.0
+   nat qos class default interface
+   nat qos class dmz-server1 interface
+   no nat qos class dmz-server2
+   bandwidth 200000
+   price bandwidth unlimited 1000
+   weight 2
+   bind port ethernet 1
+   bind health monitor google-dns
+!
+llb link cat-rb 103.49.148.1 255.255.255.0
+   nat qos class default interface
+   no nat qos class dmz-server1
+   bandwidth 200000
+   price bandwidth unlimited 1000
+   weight 1
+   bind health monitor google-dns
+!
+llb group cat-pj
+   method round-robin
+   bind link cat-pj
+   bind qos class apt-test priority 10
+   bind qos class apt137 priority 10
+   bind qos class dmz-server2 priority 10
+!
+llb group cat-rb
+   method round-robin
+   bind link cat-rb
+   bind qos class apt-dmz priority 10
+   bind qos class apt-net-20 priority 10
+   bind qos class dmz-server1 priority 10
+!
+llb group lb-all-link
+   method bandwidth
+   persistent
+   persistent by destination
+   persistent age 300
+   bind link cat-pj
+   bind link cat-rb
+   bind default qos class
+   bind qos class lb-gateway-host priority 1
+!
+llb proximity mask 255.255.240.0
+llb rtt agetime 300
+!
+!
+!
+dns enable
+dns enable proxy
+dns begin
+no dns begin
+!
+!
+ip dns primary 8.8.8.8
+ip dns secondary 8.8.4.4
+!
+flow asymmetric
+flow semi-session
+!
+language english
+snmp-server enable
+snmp-server location UNKNOWN
+snmp-server contact UNKNOWN
+!
+admin admin
+ password encrypted $1$502787af$9UYz2N.8ZzwC3wvndgTLl.
+admin sapita
+ password encrypted $1$6832a658$/jKsKy21NriGl2/JGjKmT.
+ privilege write
+admin siriruk
+ password encrypted $1$649486b6$B8aBcgU8MnqAIrPfC9/Oq1
+ privilege write
+admin vrcom
+ password encrypted $1$5e91124e$dYPOqUM2JuYIYCdgQbfvn/
+ privilege write
+admin vrcomm
+ password encrypted $1$7bc15368$5tdZNEj3U96s4b5YC7ZT.1
+ privilege write
+admin firstone
+ password encrypted $1$3ccc3761$ftSCMljcFC45cA4RU/Y0Q/
+ privilege write
+!
+admin lockout duration 10
+admin lockout reset-time 10
+admin lockout threshold 5
+!
+ip http timeout-policy idle 60
+ip http auto-redir
+ip http server
+ip http port 80
+ip http secure-server
+ip http secure-port 443
+!
+!
+ip smtp 192.168.10.20 
+ip smtp port 25
+ip smtp mailfrom itnetwork@mea.or.th 
+!
+!
+!
+authentication type local 
+!
+gui simple-qos-policy off
+!
+logging console error
+logging buffered debugging
+logging email critical
+logging syslog information
+logging monitor debugging
+logging host 10.70.0.220 port 514
+logging buffered 30000
+logging facility local0
+logging email-address itnetwork@mea.or.th pollawat.ch@mea.or.th thitima.bo@mea.or.th sathit.b@mea.or.th
+!
+applog enable aim logon logoff 
+applog enable yim logon logoff 
+applog enable msnim logon logoff 
+applog enable ftp rmdir mkdir retrieve store rename execute delete 
+no applog enable ftp logon password 
+applog enable nfs read write create mkdir remove rmdir rename 
+no applog enable nfs mount umount lookup readdir 
+applog enable cifs open read write create mkdir rmdir rename delete 
+no applog enable cifs setup tconnect logoff 
+applog enable pop3 mail 
+applog enable smtp mail 
+applog enable qq logon logoff 
+applog enable http post 
+applog archive interval 60
+applog archive format html
+!
+locale en_US.UTF-8
+enable-password encrypted P4iB1ENyWQGYDIEnG82H5vOkB7eX1iZIr8OYpA==
+!       
+banner login "Welcome to EX"
+!
+terminal idle-timeout 10
+terminal auto-size
+terminal width 80
+terminal length 24
+terminal editing
+terminal history
